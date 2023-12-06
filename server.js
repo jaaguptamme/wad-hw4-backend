@@ -126,6 +126,22 @@ app.get('/auth/logout', (req, res) => {
     res.status(202).clearCookie('jwt').json({ "Msg": "cookie cleared" }).send
 });
 
+app.post('/posts', async(req, res) => {
+    try {
+        console.log("a post request has arrived");
+        const post = req.body;
+        const newpost = await pool.query(
+            "INSERT INTO posts(body) values ($1)    RETURNING*", [post.body]
+            // $1, $2, $3 are mapped to the first, second and third element of the passed array (post.title, post.body, post.urllink)
+            // The RETURNING keyword in PostgreSQL allows returning a value from the insert or update statement.
+            // using "*" after the RETURNING keyword in PostgreSQL, will return everything
+        );
+        res.json(newpost);
+    } catch (err) {
+        console.error(err.message);
+    }
+}); 
+
 app.get('/posts', async(req, res) => {
     try {
         const posts = await pool.query("SELECT id,body,TO_CHAR(last_changed, 'dd/mm/yyyy') as date FROM posts");
