@@ -141,14 +141,14 @@ app.post('/posts', async(req, res) => {
     }
 });
 
-app.post('/posts/update', async(req, res) => {
+app.put('/posts/:id', async(req, res) => {
     try{
         console.log("a post update request has arrived");
         const body = req.body;
         const text = body.body;
-        const id = body.id;
+        const { id } = req.params;
         const updatedpost = await pool.query(
-            "UPDATE posts SET body = $2 WHERE id = $1   RETURNING*", [id,text]
+            "UPDATE posts SET body = $2, last_changed = CURRENT_DATE WHERE id = $1   RETURNING*", [id,text]
         )
         res.json(updatedpost);
     }
