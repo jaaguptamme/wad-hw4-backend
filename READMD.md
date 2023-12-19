@@ -7,6 +7,6 @@ npm install
 
 ### To run
 ```
-npm run server
+node server
 ```
 
