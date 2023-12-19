@@ -139,7 +139,23 @@ app.post('/posts', async(req, res) => {
     } catch (err) {
         console.error(err.message);
     }
-}); 
+});
+
+app.post('/posts/update', async(req, res) => {
+    try{
+        console.log("a post update request has arrived");
+        const body = req.body;
+        const text = body.body;
+        const id = body.id;
+        const updatedpost = await pool.query(
+            "UPDATE posts SET body = $2 WHERE id = $1   RETURNING*", [id,text]
+        )
+        res.json(updatedpost);
+    }
+    catch (err){
+        console.error(err.message);
+    }
+})
 
 app.delete('/posts/:id', async(req, res) => {
     try {
